@@ -82,36 +82,51 @@ class Menu:
         else:
             self.screen = pygame.display.set_mode((1280, 720))
 
-        # Update background to new screen dimensions
         self.background_image = pygame.transform.scale(self.original_background, self.screen.get_size())
-
-        # Recalculate button positions after screen change
-        self.reposition_buttons()
+        self.reposition_buttons()  # This will handle the layout switch
 
     def reposition_buttons(self):
-        """Recalculates button positions when screen size changes"""
-        self.button_width = int(self.screen.get_width() * 0.2)
-        self.button_height = int(self.screen.get_height() * 0.1)
-        self.spacing = int(self.screen.get_height() * 0.03)  # Adjust spacing based on screen height
+        """Recalculates button positions based on screen mode"""
+        if self.fullscreen:
+            # ORIGINAL HORIZONTAL LAYOUT (Fullscreen)
+            self.button_width = 300  # Original fixed width
+            self.button_height = 90  # Original fixed height
+            self.spacing = 40  # Original fixed spacing
 
-        # Center horizontally
-        center_x = (self.screen.get_width() - self.button_width) // 2
+            # Calculate positions using original layout logic
+            self.total_width = (3 * self.button_width) + (2 * self.spacing)
+            self.start_x = (self.screen.get_width() - self.total_width) // 2
+            self.start_y = self.screen.get_height() // 2
 
-        # Position buttons in a vertical stack
-        self.start_y = self.screen.get_height() // 3  # Start higher on the screen
-        self.start_button.rect.topleft = (center_x, self.start_y)
-        self.settings_button.rect.topleft = (center_x, self.start_y + self.button_height + self.spacing)
-        self.quit_button.rect.topleft = (center_x, self.start_y + 2 * (self.button_height + self.spacing))
+            # Position buttons horizontally as in __init__
+            self.start_button.rect.topleft = (self.start_x, self.start_y)
+            self.settings_button.rect.topleft = (self.start_x + self.button_width + self.spacing, self.start_y)
+            self.quit_button.rect.topleft = (self.start_x + (2 * self.button_width) + (2 * self.spacing), self.start_y)
+        else:
+            # VERTICAL LAYOUT (Windowed)
+            self.button_width = int(self.screen.get_width() * 0.3)  # 30% of screen width
+            self.button_height = int(self.screen.get_height() * 0.1)  # 10% of screen height
+            self.spacing = int(self.screen.get_height() * 0.03)  # 3% of screen height
 
-        # Position Back button correctly at the bottom
+            # Calculate vertical positions
+            start_x = (self.screen.get_width() - self.button_width) // 2
+            start_y = self.screen.get_height() // 3
+
+            # Stack buttons vertically
+            self.start_button.rect.topleft = (start_x, start_y)
+            self.settings_button.rect.topleft = (start_x, start_y + self.button_height + self.spacing)
+            self.quit_button.rect.topleft = (start_x, start_y + 2 * (self.button_height + self.spacing))
+
+        # Common elements update
         self.back_button.rect.topleft = (
-        center_x, self.screen.get_height() - self.button_height - int(self.screen.get_height() * 0.05))
+            (self.screen.get_width() - self.button_width) // 2,
+            self.screen.get_height() - self.button_height - 50
+        )
 
-        # Correctly update the radio button position (since it doesn't have a rect)
         self.fullscreen_radio.x = self.screen.get_width() // 2 - 100
         self.fullscreen_radio.y = self.screen.get_height() // 2
 
-        self.draw_menu()  # Redraw the menu with updated button positions
+        self.draw_menu()
 
     def draw_menu(self):
         self.screen.blit(self.background_image, (0, 0))

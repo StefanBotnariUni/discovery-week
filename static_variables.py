@@ -1,6 +1,7 @@
 WIDTH = 800
 HEIGHT = 600
 CAPTION = 'game'
+TILE_SIZE = 64
 
 
 #colors

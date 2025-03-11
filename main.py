@@ -1,6 +1,7 @@
 import pygame
 import sys
 from static_variables import *
+from map.map import draw_map
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -14,7 +15,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-
+    draw_map(screen, TILE_SIZE)
     pygame.display.flip()
 
 

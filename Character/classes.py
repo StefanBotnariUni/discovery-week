@@ -14,7 +14,7 @@ class Character:
             sys.exit()
         self.rect = self.image.get_rect()
 
-        self.speed = 5
+        self.speed = 50
         self.direction = pygame.math.Vector2(0,0)
         self.facing = 'down'
         self.moving_left = False

@@ -18,6 +18,9 @@ WIDTH, HEIGHT = info.current_w, info.current_h
 fullscreen = True  # Start in fullscreen mode
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
 pygame.display.set_caption("PyCraft")  # Updated caption
+# Viewport dimensions
+VIEWPORT_WIDTH = 960
+VIEWPORT_HEIGHT = 540
 
 # Colors (Minecraft-inspired)
 BACKGROUND_COLOR = (100, 150, 100)  # Earthy green

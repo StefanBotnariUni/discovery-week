@@ -29,8 +29,23 @@ while menu.running:
 # After the menu is closed, start the game
 if menu.start_game:  # Only proceed if the user starts the game
 
+    # Initialize viewport dimensions (smaller resolution)
+    viewport_width = VIEWPORT_WIDTH
+    viewport_height = VIEWPORT_HEIGHT
+
+    # Create a viewport surface (smaller resolution)
+    viewport_surface = pygame.Surface((viewport_width, viewport_height))
+
+    # Initialize game objects
     game_map = Map(220)
-    player = Player(x=WIDTH/2, y=HEIGHT/2, speed=150, sprite_sheet_path="Character/png/character.png", sprite_width=32, sprite_height=32)
+    player = Player(
+        x=viewport_width // 2,  # Start player at the center of the viewport
+        y=viewport_height // 2,
+        speed=150,
+        sprite_sheet_path="Character/png/character.png",
+        sprite_width=32,
+        sprite_height=32
+    )
 
     # Game Loop
     clock = pygame.time.Clock()
@@ -47,6 +62,10 @@ if menu.start_game:  # Only proceed if the user starts the game
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.VIDEORESIZE:  # Handle screen resizing
+                # Update screen dimensions
+                WIDTH, HEIGHT = event.w, event.h
+                screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
 
         keys = pygame.key.get_pressed()
         player.handle_input(keys)
@@ -55,17 +74,22 @@ if menu.start_game:  # Only proceed if the user starts the game
         player.update(dt)
 
         # Update camera offset based on the player's position
-        camera_offset.x = WIDTH / 2 - player.position.x
-        camera_offset.y = HEIGHT / 2 - player.position.y
+        camera_offset.x = viewport_width // 2 - player.position.x
+        camera_offset.y = viewport_height // 2 - player.position.y
 
-        # Clear the screen
-        screen.fill((0, 0, 0))
+        # Clear the viewport surface
+        viewport_surface.fill((0, 0, 0))
 
         # Draw the map with camera offset
-        game_map.draw(screen, camera_offset)
+        game_map.draw(viewport_surface, camera_offset)
 
-        # Draw the player at the center of the screen
-        player.draw(screen)
+        # Draw the player at the center of the viewport
+        player.draw(viewport_surface)
+
+        # Scale the viewport surface to the screen size
+        scaled_viewport = pygame.transform.scale(viewport_surface, (WIDTH, HEIGHT))
+
+        # Draw the scaled viewport to the screen
+        screen.blit(scaled_viewport, (0, 0))
 
         pygame.display.flip()
-

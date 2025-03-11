@@ -36,18 +36,8 @@ class Player:
     def change_image(self, direction):
         """Change the player's image based on movement direction."""
         self.direction = direction
-        if direction == 1:  # up
-            self.frame_index = (self.frame_index + self.animation_speed) % 3
-            self.image = self.pil_to_pygame(self.sprites[3][int(self.frame_index)])
-        elif direction == 2:  # down
-            self.frame_index = (self.frame_index + self.animation_speed) % 3
-            self.image = self.pil_to_pygame(self.sprites[0][int(self.frame_index)])
-        elif direction == 3:  # left
-            self.frame_index = (self.frame_index + self.animation_speed) % 3
-            self.image = self.pil_to_pygame(self.sprites[1][int(self.frame_index)])
-        elif direction == 4:  # right
-            self.frame_index = (self.frame_index + self.animation_speed) % 3
-            self.image = self.pil_to_pygame(self.sprites[2][int(self.frame_index)])
+        self.frame_index = (self.frame_index + self.animation_speed) % 3
+        self.image = self.pil_to_pygame(self.sprites[direction][int(self.frame_index)])
 
         # Upscale the image
         self.image = pygame.transform.scale(self.image,
@@ -63,21 +53,29 @@ class Player:
         # Movement logic
         if keys[pygame.K_w]:
             self.move_y -= 1
-            self.change_image(1)  # up
+            self.change_image(3)  # up
         if keys[pygame.K_s]:
             self.move_y += 1
-            self.change_image(2)  # down
+            self.change_image(0)  # down
         if keys[pygame.K_a]:
             self.move_x -= 1
-            self.change_image(3)  # left
+            self.change_image(1)  # left
         if keys[pygame.K_d]:
             self.move_x += 1
-            self.change_image(4)  # right
+            self.change_image(2)  # right
 
         # Normalize movement vector if moving diagonally
         if self.move_x != 0 and self.move_y != 0:
             self.move_x /= math.sqrt(2)
             self.move_y /= math.sqrt(2)
+        if self.move_x < 0 and self.move_y < 0: #UP AND LEFT
+            self.change_image(6)
+        elif self.move_x > 0 and self.move_y > 0: # UP AND RIGHT
+            self.change_image(5)
+        elif self.move_x > 0 and self.move_y < 0:
+            self.change_image(7)
+        elif self.move_x < 0 and self.move_y > 0:
+            self.change_image(4)
 
     def update(self, dt):
         """Update the player's position based on movement and delta time."""

@@ -5,8 +5,8 @@ import sys
 pygame.init()
 
 # Load a blockier font (Press Start 2P or any blocky font of your choice)
-font_path = "PressStart2P-Regular.ttf"  # Change the path if you have it elsewhere
-small_font_path = "PressStart2P-Regular.ttf"  # For smaller text
+font_path = "src/PressStart2P-Regular.ttf"  # Change the path if you have it elsewhere
+small_font_path = "src/PressStart2P-Regular.ttf"  # For smaller text
 font = pygame.font.Font(font_path, 28)  # Adjusted button text size to be 20% smaller again
 small_font = pygame.font.Font(small_font_path, 40)  # For other small text
 fullscreen_font = pygame.font.Font(small_font_path, 15)  # For fullscreen label, adjusted to 15
@@ -27,7 +27,7 @@ WHITE = (255, 255, 255)
 TEXT_COLOR = (200, 255, 200)  # Light greenish text
 
 # Load and resize logo image
-logo = pygame.image.load("pycraft_title.png")
+logo = pygame.image.load("images/pycraft_title.png")
 logo = pygame.transform.scale(logo, (508, 91))
 
 

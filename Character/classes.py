@@ -1,88 +1,65 @@
 import pygame
 import os
 import sys
-
-class Character:
-    def __init__(self, x, y, width=64, height=64):
-        image_path = 'Character/png/character.png'
-        try:
-            self.original_image = pygame.image.load(os.path.join(image_path))
-            self.image = pygame.transform.scale(self.original_image, (width, height))
-        except FileNotFoundError:
-            print(f"Error: Image not found at {image_path}")
-            pygame.quit()
-            sys.exit()
-        self.rect = self.image.get_rect()
-
-        self.speed = 50
-        self.direction = pygame.math.Vector2(0,0)
-        self.facing = 'down'
-        self.moving_left = False
-        self.moving_right = False
-        self.moving_up = False
-        self.moving_down = False
+from SpriteProcessor.SpriteSheetProcessor import SpriteSheetProcessor
+import math
 
 
+class Player:
+    def __init__(self, x, y, speed, sprite_sheet_path, sprite_width, sprite_height, scale_factor=2):
+        self.position = pygame.Vector2(x, y)
+        self.speed = speed
+        self.move_x = 0
+        self.move_y = 0
+        self.scale_factor = scale_factor
 
-            # for animation
-    #     self.animation_frames = {}
-    #     self.load_animations()
-    #     self.current_frame = 0
-    #     self.animation_speed = 0.15
-    #     self.last_update = pygame.time.get_ticks()
-    #
-    # def load_animations(self):
-    #     directions = ["down", "up", "left", "right"]
-    #     for direction in directions:
-    #         self.animation_frames[direction] = [
-    #             pygame.image.load(f"Character/animation/{direction}_{i}.png")
-    #             for i in range(1, 5)  # Assuming 4 frames per direction
-    #         ]
-    # def animate(self):
-    #     """Handle character animation"""
-    #     now = pygame.time.get_ticks()
-    #     if now - self.last_update > self.animation_speed * 1000:
-    #         self.last_update = now
-    #         self.current_frame = (self.current_frame + 1) % len(self.animation_frames[self.facing])
-    #         self.image = self.animation_frames[self.facing][self.current_frame]
+        # Load the sprite sheet and extract sprites
+        self.sprite_processor = SpriteSheetProcessor(sprite_sheet_path, sprite_width, sprite_height)
+        self.sprites = self.sprite_processor.split_sprites()
 
-    def move(self):
-        """Move character based on movement flags"""
-        if self.moving_left:
-            self.rect.x -= self.speed
-        if self.moving_right:
-            self.rect.x += self.speed
-        if self.moving_up:
-            self.rect.y -= self.speed
-        if self.moving_down:
-            self.rect.y += self.speed
+        # Convert the first sprite from PIL to Pygame surface
+        self.image = self.pil_to_pygame(self.sprites[0][0])
 
-    def update(self):
-        """Update character state"""
-        self.move()
+        # Upscale the image
+        self.image = pygame.transform.scale(self.image,
+                                            (sprite_width * scale_factor, sprite_height * scale_factor))
+        self.rect = self.image.get_rect(center=(x, y))
 
-    def draw(self, surface):
-        """Draw character on the screen"""
-        surface.blit(self.image, self.rect)
+    def pil_to_pygame(self, pil_image):
+        """Convert a PIL image to a pygame surface."""
+        return pygame.image.fromstring(pil_image.tobytes(), pil_image.size, pil_image.mode).convert_alpha()
 
-    def handle_input(self, event):
-        """Handle keyboard input for movement"""
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
-                self.moving_left = True
-            if event.key == pygame.K_d:
-                self.moving_right = True
-            if event.key == pygame.K_w:
-                self.moving_up = True
-            if event.key == pygame.K_s:
-                self.moving_down = True
+    def handle_input(self, keys):
+        """Handle player movement based on keyboard input."""
+        # Reset movement
+        self.move_x = 0
+        self.move_y = 0
 
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_a:
-                self.moving_left = False
-            if event.key == pygame.K_d:
-                self.moving_right = False
-            if event.key == pygame.K_w:
-                self.moving_up = False
-            if event.key == pygame.K_s:
-                self.moving_down = False
+        # Movement logic
+        if keys[pygame.K_w]:
+            self.move_y -= 1
+        if keys[pygame.K_s]:
+            self.move_y += 1
+        if keys[pygame.K_a]:
+            self.move_x -= 1
+        if keys[pygame.K_d]:
+            self.move_x += 1
+
+        # Normalize movement vector if moving diagonally
+        if self.move_x != 0 and self.move_y != 0:
+            self.move_x /= math.sqrt(2)
+            self.move_y /= math.sqrt(2)
+
+    def update(self, dt):
+        """Update the player's position based on movement and delta time."""
+        self.position.x += self.move_x * self.speed * dt
+        self.position.y += self.move_y * self.speed * dt
+        self.rect.center = (int(self.position.x), int(self.position.y))  # Update rect position
+
+    def draw(self, screen):
+        """Draw the player on the screen."""
+        screen.blit(self.image, self.rect)
+
+    def get_movement(self):
+        """Return the current movement vector for debugging or other purposes."""
+        return self.move_x, self.move_y

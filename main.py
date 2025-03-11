@@ -1,7 +1,7 @@
 import pygame
 import sys
 from static_variables import *
-from map.map import draw_map
+from map_folder.map import draw_map
 from Character.classes import Character
 
 

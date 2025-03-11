@@ -4,9 +4,9 @@ import pygame
 
 #find normal png's pls
 tile_images = {
-    0: pygame.image.load("map/png/grass.png"),
-    1: pygame.image.load("map/png/water.jpg"),
-    2: pygame.image.load("map/png/path.jpg"),
+    0: pygame.image.load("map_folder/png/grass.png"),
+    1: pygame.image.load("map_folder/png/water.jpg"),
+    2: pygame.image.load("map_folder/png/path.jpg"),
 }
 
 game_map = [

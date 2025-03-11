@@ -9,6 +9,9 @@ class Menu:
         self.settings_game = False
         self.pause_game = False
         self.back_game = False
+        # Initialize and play background music
+        pygame.mixer.music.load('src/menu.mp3')
+        pygame.mixer.music.play(-1)  # -1 makes it loop indefinitely
         # Load original background image and scale it to current screen size
         self.original_background = pygame.image.load("images/background.png")
         self.background_image = pygame.transform.scale(self.original_background, self.screen.get_size())

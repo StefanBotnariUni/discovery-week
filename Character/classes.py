@@ -89,7 +89,7 @@ class Player:
 
     def draw(self, screen):
         """Draw the player at the center of the screen."""
-        screen.blit(self.image, (WIDTH // 2 - self.rect.width // 2, HEIGHT // 2 - self.rect.height // 2))
+        screen.blit(self.image, (screen.get_width() // 2 - self.rect.width // 2, screen.get_height() // 2 - self.rect.height // 2))
 
     def get_movement(self):
         """Return the current movement vector for debugging or other purposes."""

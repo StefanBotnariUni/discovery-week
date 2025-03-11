@@ -1,5 +1,4 @@
 import pygame
-
 class Map:
     def __init__(self, tile_size):
         self.tile_size = tile_size
@@ -52,7 +51,7 @@ class Map:
                     screen.blit(self.tile_images[tile], (x, y))
 
     def draw(self, screen, camera_offset):
+        """Draw the game map with ground, surface, and tree layers."""
         self.draw_layer(screen, camera_offset, self.ground_map, x_offset=-4, y_offset=119)
-        print(camera_offset.x, camera_offset.y)
         self.draw_layer(screen, camera_offset, self.surface_map)
         self.draw_layer(screen, camera_offset, self.tree_layer)

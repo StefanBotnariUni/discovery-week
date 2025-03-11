@@ -11,7 +11,7 @@ pygame.init()
 info = pygame.display.Info()
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
 pygame.display.set_caption("PYCRAFT")
-pygame.display.set_icon(pygame.image.load("favicon.png"))
+pygame.display.set_icon(pygame.image.load("images/favicon.png"))
 
 # Create Menu
 menu = Menu(screen)

@@ -1,61 +1,59 @@
 import pygame
 import sys
 from static_variables import *
-from map_folder.map import draw_map
+from map_folder.map import Map
 from Character.classes import Player
 from MenuCode import Menu
 
 pygame.init()
 
+# Initialize screen
 info = pygame.display.Info()
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
 pygame.display.set_caption("PYCRAFT")
 
+# Create Menu
 menu = Menu(screen)
 
+# Menu Loop (runs until the player starts the game)
 while menu.running:
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            menu.handle_event(event)
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        menu.handle_event(event)
 
     menu.draw_menu()
-
     pygame.display.flip()
 
-# Create a player object with an image
-player = Player(x=400, y=300, speed=150, sprite_sheet_path="Character/png/character.png", sprite_width=32, sprite_height=32, scale_factor=3)
-clock = pygame.time.Clock()
-fps_limit = 60
-while menu.start_game:
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            menu.start_game = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            menu.start_game = False
+# After the menu is closed, start the game
+if menu.start_game:  # Only proceed if the user starts the game
 
-    # Get keyboard input
-    keys = pygame.key.get_pressed()
+    game_map = Map(220)
+    player = Player(x=400, y=300, speed=150, sprite_sheet_path="Character/png/character.png", sprite_width=32, sprite_height=32)
 
-    # Handle player input
-    player.handle_input(keys)
+    # Game Loop
+    clock = pygame.time.Clock()
+    fps_limit = 60
 
-    # Update player position
-    dt = clock.tick(fps_limit) / 1000  # Delta time in seconds
-    player.update(dt)
+    while True:  # Infinite loop for the game, exits on quit
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
 
-    # Fill the screen with white
-    screen.fill((255, 255, 255))
+        keys = pygame.key.get_pressed()
+        player.handle_input(keys)
 
-    # Draw the player
-    player.draw(screen)
+        dt = clock.tick(fps_limit) / 1000  # Delta time
+        player.update(dt)
 
-    # Render the movement vector text
-    move_x, move_y = player.get_movement()
-    text_surface = font.render(f'[{move_x:.2f}, {move_y:.2f}]', True, (0, 0, 0))
-    screen.blit(text_surface, (50, 50))
+        # Draw game elements in order
+        screen.fill((0, 0, 0))  # Clear screen first
+        game_map.draw(screen)  # Draw the map first
+        player.draw(screen)  # Draw the player on top
 
-    # Update the display
-    pygame.display.flip()
-
-pygame.quit()
+        pygame.display.flip()

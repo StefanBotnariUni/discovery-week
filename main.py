@@ -30,13 +30,16 @@ while menu.running:
 if menu.start_game:  # Only proceed if the user starts the game
 
     game_map = Map(220)
-    player = Player(x=400, y=300, speed=150, sprite_sheet_path="Character/png/character.png", sprite_width=32, sprite_height=32)
+    player = Player(x=WIDTH/2, y=HEIGHT/2, speed=150, sprite_sheet_path="Character/png/character.png", sprite_width=32, sprite_height=32)
 
     # Game Loop
     clock = pygame.time.Clock()
     fps_limit = 60
 
-    while True:  # Infinite loop for the game, exits on quit
+    # Camera offset initialization
+    camera_offset = pygame.Vector2(0, 0)
+
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -51,9 +54,18 @@ if menu.start_game:  # Only proceed if the user starts the game
         dt = clock.tick(fps_limit) / 1000  # Delta time
         player.update(dt)
 
-        # Draw game elements in order
-        screen.fill((0, 0, 0))  # Clear screen first
-        game_map.draw(screen)  # Draw the map first
-        player.draw(screen)  # Draw the player on top
+        # Update camera offset based on the player's position
+        camera_offset.x = WIDTH / 2 - player.position.x
+        camera_offset.y = HEIGHT / 2 - player.position.y
+
+        # Clear the screen
+        screen.fill((0, 0, 0))
+
+        # Draw the map with camera offset
+        game_map.draw(screen, camera_offset)
+
+        # Draw the player at the center of the screen
+        player.draw(screen)
 
         pygame.display.flip()
+

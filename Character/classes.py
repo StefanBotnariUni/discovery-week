@@ -3,10 +3,11 @@ import os
 import sys
 from SpriteProcessor.SpriteSheetProcessor import SpriteSheetProcessor
 import math
+from static_variables import *
 
 
 class Player:
-    def __init__(self, x, y, speed, sprite_sheet_path, sprite_width, sprite_height, scale_factor=2):
+    def __init__(self, x, y, speed, sprite_sheet_path, sprite_width, sprite_height, scale_factor=3):
         self.position = pygame.Vector2(x, y)
         self.speed = speed
         self.move_x = 0
@@ -57,8 +58,8 @@ class Player:
         self.rect.center = (int(self.position.x), int(self.position.y))  # Update rect position
 
     def draw(self, screen):
-        """Draw the player on the screen."""
-        screen.blit(self.image, self.rect)
+        """Draw the player at the center of the screen."""
+        screen.blit(self.image, (WIDTH // 2 - self.rect.width // 2, HEIGHT // 2 - self.rect.height // 2))
 
     def get_movement(self):
         """Return the current movement vector for debugging or other purposes."""

@@ -4,6 +4,7 @@ from static_variables import *
 from map_folder.map import draw_map
 from Character.classes import Player
 from MenuCode import Menu
+from HeadMovement.handle_head_movement import get_head_direction
 
 pygame.init()
 
@@ -39,7 +40,10 @@ while menu.start_game:
 
     # Handle player input
     player.handle_input(keys)
+    direction = get_head_direction()
 
+    # Update player movement
+    player.handle_head_movement(direction)
     # Update player position
     dt = clock.tick(fps_limit) / 1000  # Delta time in seconds
     player.update(dt)

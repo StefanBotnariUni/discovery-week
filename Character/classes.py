@@ -25,6 +25,18 @@ class Player:
                                             (sprite_width * scale_factor, sprite_height * scale_factor))
         self.rect = self.image.get_rect(center=(x, y))
 
+    def move(self, direction):
+        if "Left" in direction:
+            self.x -= 1
+        if "Right" in direction:
+            self.x += 1
+        if "Up" in direction:
+            self.y -= 1
+        if "Down" in direction:
+            self.y += 1
+
+            print(f"Character moved to: ({self.x}, {self.y})")
+
     def pil_to_pygame(self, pil_image):
         """Convert a PIL image to a pygame surface."""
         return pygame.image.fromstring(pil_image.tobytes(), pil_image.size, pil_image.mode).convert_alpha()
@@ -63,3 +75,24 @@ class Player:
     def get_movement(self):
         """Return the current movement vector for debugging or other purposes."""
         return self.move_x, self.move_y
+
+    def handle_head_movement(self, direction):
+        """Update movement based on head direction."""
+        self.move_x = 0
+        self.move_y = 0
+
+        if "Left" in direction:
+            self.move_x -= 1
+        if "Right" in direction:
+            self.move_x += 1
+        if "Up" in direction:
+            self.move_y -= 1
+        if "Down" in direction:
+            self.move_y += 1
+
+        # Normalize diagonal movement
+        if self.move_x != 0 and self.move_y != 0:
+            self.move_x /= math.sqrt(2)
+            self.move_y /= math.sqrt(2)
+
+

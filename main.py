@@ -1,11 +1,13 @@
+import streamlit as st
 import pygame
 import sys
 from static_variables import *
 from map_folder.map import Map
 from Character.classes import Player
 from MenuCode import Menu
-from HeadMovements.hadle_head_move import get_head_direction
+from HeadMovements.hadle_head_move import get_head_direction, cap
 import cv2
+import numpy as np
 
 pygame.init()
 
@@ -17,6 +19,17 @@ pygame.display.set_icon(pygame.image.load("images/favicon.png"))
 
 # Create Menu
 menu = Menu(screen)
+
+# Streamlit setup
+st.title('PyCraft Streaming Example')
+
+# Function to capture, rotate, and flip PyGame screen
+def capture_screen():
+    frame = pygame.surfarray.array3d(screen)
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+    frame = cv2.flip(frame, 1)  # Flip horizontally
+    return frame
 
 # Menu Loop (runs until the player starts the game)
 while menu.running:
@@ -56,6 +69,9 @@ if menu.start_game:  # Only proceed if the user starts the game
 
     # Camera offset initialization
     camera_offset = pygame.Vector2(0, 0)
+
+    # Create a placeholder for the image
+    image_placeholder = st.empty()
 
     while True:
         for event in pygame.event.get():
@@ -106,3 +122,7 @@ if menu.start_game:  # Only proceed if the user starts the game
         screen.blit(scaled_viewport, (0, 0))
 
         pygame.display.flip()
+
+        # Capture screen and display in Streamlit
+        frame = capture_screen()
+        image_placeholder.image(frame, channels="BGR", use_column_width=False)

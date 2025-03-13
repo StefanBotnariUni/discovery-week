@@ -6,6 +6,7 @@ import math
 import random
 from static_variables import *
 
+
 class Player:
     def __init__(self, x, y, speed, sprite_sheet_path, sprite_width, sprite_height, scale_factor=3):
         self.position = pygame.Vector2(x, y)
@@ -68,9 +69,9 @@ class Player:
         if self.move_x != 0 and self.move_y != 0:
             self.move_x /= math.sqrt(2)
             self.move_y /= math.sqrt(2)
-        if self.move_x < 0 and self.move_y < 0: #UP AND LEFT
+        if self.move_x < 0 and self.move_y < 0:  # UP AND LEFT
             self.change_image(6)
-        elif self.move_x > 0 and self.move_y > 0: # UP AND RIGHT
+        elif self.move_x > 0 and self.move_y > 0:  # UP AND RIGHT
             self.change_image(5)
         elif self.move_x > 0 and self.move_y < 0:
             self.change_image(7)
@@ -89,8 +90,52 @@ class Player:
 
     def draw(self, screen):
         """Draw the player at the center of the screen."""
-        screen.blit(self.image, (screen.get_width() // 2 - self.rect.width // 2, screen.get_height() // 2 - self.rect.height // 2))
+        screen.blit(self.image,
+                    (screen.get_width() // 2 - self.rect.width // 2, screen.get_height() // 2 - self.rect.height // 2))
 
     def get_movement(self):
         """Return the current movement vector for debugging or other purposes."""
         return self.move_x, self.move_y
+
+    def handle_head_movement(self, direction):
+        # Reset movement
+        self.move_x = 0
+        self.move_y = 0
+
+        # Process head direction
+        for d in direction:
+            if d == "Left":
+                self.move_x -= 1
+            elif d == "Right":
+                self.move_x += 1
+            elif d == "Up":
+                self.move_y -= 1
+            elif d == "Down":
+                self.move_y += 1
+
+        # Normalize movement vector if moving diagonally
+        if self.move_x != 0 and self.move_y != 0:
+            self.move_x /= math.sqrt(2)
+            self.move_y /= math.sqrt(2)
+
+        # Determine animation direction based on movement
+        if self.move_x < 0 and self.move_y < 0:
+            self.direction = 6  # Up-Left
+        elif self.move_x > 0 and self.move_y > 0:
+            self.direction = 5  # Down-Right
+        elif self.move_x > 0 and self.move_y < 0:
+            self.direction = 7  # Up-Right
+        elif self.move_x < 0 and self.move_y > 0:
+            self.direction = 4  # Down-Left
+        elif self.move_x < 0:
+            self.direction = 1  # Left
+        elif self.move_x > 0:
+            self.direction = 2  # Right
+        elif self.move_y < 0:
+            self.direction = 3  # Up
+        elif self.move_y > 0:
+            self.direction = 0  # Down
+
+        # Update animation frame
+        if self.move_x != 0 or self.move_y != 0:
+            self.change_image(self.direction)

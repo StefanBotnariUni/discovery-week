@@ -1,4 +1,6 @@
 import pygame
+
+
 class Map:
     def __init__(self, tile_size):
         self.tile_size = tile_size
@@ -7,6 +9,8 @@ class Map:
             1: pygame.image.load("map_folder/png/tree_pine_S.png").convert_alpha(),  # Tree image
             2: pygame.image.load("map_folder/png/cliff_cornerInner_S.png").convert_alpha(),
         }
+        self.background = pygame.image.load("Images/game_background.jpg").convert()
+
         self.surface_map = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -17,12 +21,12 @@ class Map:
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ]
         self.ground_map = [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+            [-1, -1, -1, -1, -1, -1, -1, -1, -1, 2],
+            [-1, -1, -1, -1, -1, -1, -1, -1, -1, 2],
+            [-1, -1, -1, -1, -1, -1, -1, -1, -1, 2],
+            [-1, -1, -1, -1, -1, -1, -1, -1, -1, 2],
+            [-1, -1, -1, -1, -1, -1, -1, -1, -1, 2],
+            [-1, -1, -1, -1, -1, -1, -1, -1, -1, 2],
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
         ]
         self.tree_layer = [
@@ -51,7 +55,8 @@ class Map:
                     screen.blit(self.tile_images[tile], (x, y))
 
     def draw(self, screen, camera_offset):
-        """Draw the game map with ground, surface, and tree layers."""
+        """Draw the game map with background, ground, surface, and tree layers."""
+        screen.blit(self.background, (0, 0))  # Draw background first
         self.draw_layer(screen, camera_offset, self.ground_map, x_offset=-4, y_offset=119)
         self.draw_layer(screen, camera_offset, self.surface_map)
         self.draw_layer(screen, camera_offset, self.tree_layer)

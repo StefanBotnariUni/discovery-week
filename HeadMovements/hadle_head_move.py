@@ -20,6 +20,9 @@ def get_head_direction():
     if not success:
         return ["Straight"]  # Return default if no frame is captured
 
+    # Rotate the image 90 degrees clockwise
+    image = cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
     # Convert image to RGB and process
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     results = face_mesh.process(image_rgb)

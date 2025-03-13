@@ -31,6 +31,19 @@ def capture_screen():
     frame = cv2.flip(frame, 1)  # Flip horizontally
     return frame
 
+# Function to capture video feed from the camera
+# Function to capture video feed from the camera
+# Function to capture video feed from the camera
+def capture_camera_feed():
+    ret, frame = cap.read()
+    if ret:
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Flip the frame horizontally if necessary
+        frame = cv2.flip(frame, 1)  # 1 means flipping around the y-axis (horizontal flip)
+        # Resize the camera feed
+        frame = cv2.resize(frame, (200, 150))  # Resize the camera feed
+    return frame
+
 # Menu Loop (runs until the player starts the game)
 while menu.running:
     for event in pygame.event.get():
@@ -120,6 +133,14 @@ if menu.start_game:  # Only proceed if the user starts the game
 
         # Draw the scaled viewport to the screen
         screen.blit(scaled_viewport, (0, 0))
+
+        # Capture camera feed and overlay it on the top right of the screen
+        camera_frame = capture_camera_feed()
+        if camera_frame is not None:
+            # Transpose the frame to fix the orientation
+            camera_frame = cv2.transpose(camera_frame)  # Swap width and height
+            camera_surface = pygame.surfarray.make_surface(camera_frame)
+            screen.blit(camera_surface, (WIDTH - 210, 10))  # Position the camera feed on the top right
 
         pygame.display.flip()
 

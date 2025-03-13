@@ -98,44 +98,41 @@ class Player:
         return self.move_x, self.move_y
 
     def handle_head_movement(self, direction):
+        """Move player based on head movement (adjusted for isometric movement, with flipped X-axis)."""
         # Reset movement
         self.move_x = 0
         self.move_y = 0
 
-        # Process head direction
-        for d in direction:
-            if d == "Left":
-                self.move_x -= 1
-            elif d == "Right":
-                self.move_x += 1
-            elif d == "Up":
-                self.move_y -= 1
-            elif d == "Down":
-                self.move_y += 1
+        # Adjust for isometric movement with flipped x-axis
+        if "Right" in direction:  # Flipped: Right moves left-up
+            self.move_x -= 1  # Moves left-up in isometric
+        if "Left" in direction:  # Flipped: Left moves right-down
+            self.move_x += 1  # Moves right-down in isometric
+        if "Up" in direction:
+            self.move_y -= 1  # Moves right-up in isometric
+        if "Down" in direction:
+            self.move_y += 1  # Moves left-down in isometric
 
-        # Normalize movement vector if moving diagonally
+        # Normalize movement to prevent fast diagonal movement
         if self.move_x != 0 and self.move_y != 0:
             self.move_x /= math.sqrt(2)
             self.move_y /= math.sqrt(2)
 
-        # Determine animation direction based on movement
+        # Set the correct animation based on movement
         if self.move_x < 0 and self.move_y < 0:
-            self.direction = 6  # Up-Left
+            self.change_image(6)  # Up-Left
         elif self.move_x > 0 and self.move_y > 0:
-            self.direction = 5  # Down-Right
+            self.change_image(5)  # Down-Right
         elif self.move_x > 0 and self.move_y < 0:
-            self.direction = 7  # Up-Right
+            self.change_image(7)  # Up-Right
         elif self.move_x < 0 and self.move_y > 0:
-            self.direction = 4  # Down-Left
+            self.change_image(4)  # Down-Left
         elif self.move_x < 0:
-            self.direction = 1  # Left
+            self.change_image(1)  # Left
         elif self.move_x > 0:
-            self.direction = 2  # Right
+            self.change_image(2)  # Right
         elif self.move_y < 0:
-            self.direction = 3  # Up
+            self.change_image(3)  # Up
         elif self.move_y > 0:
-            self.direction = 0  # Down
+            self.change_image(0)  # Down
 
-        # Update animation frame
-        if self.move_x != 0 or self.move_y != 0:
-            self.change_image(self.direction)

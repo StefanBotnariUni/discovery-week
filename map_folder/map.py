@@ -9,7 +9,7 @@ class Map:
             1: pygame.image.load("map_folder/png/tree_pine_S.png").convert_alpha(),  # Tree image
             2: pygame.image.load("map_folder/png/cliff_cornerInner_S.png").convert_alpha(),
         }
-        self.background = pygame.image.load("Images/game_background.jpg").convert()
+        self.background = pygame.image.load("Images/game_background2.jpg").convert()
 
         self.surface_map = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
